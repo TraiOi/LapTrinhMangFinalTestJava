@@ -1,0 +1,2 @@
+* a) Báo lỗi, do trong giao thức TCP, Server và Client hoạt động phụ thuộc vào nhau, Client gửi yêu cầu kết nối đến Server nhưng không có phản hồi nên kết nối lập tức bị hủy.
+* b) Server nhận được thông điệp của Client do trong giao thức UDP, Client và Server hoạt động độc lập, Client liên tục gửi thông điệp đi nhưng không chờ phản hồi của Server, Server xác nhận đã kết nối với Client khi nhận được thông điệp từ Client gửi lên Server.
