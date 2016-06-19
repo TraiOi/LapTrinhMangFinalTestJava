@@ -13,6 +13,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 
 /**
@@ -92,19 +95,28 @@ public class TCPServer extends javax.swing.JFrame {
             myServer = new ServerSocket(serverPort);
             clientSocket = myServer.accept();
             dis = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-            int ngay = Integer.parseInt(dis.readUTF());
-            int thang = Integer.parseInt(dis.readUTF());
-            appendLog("[+] Nhan duoc:  " + ngay + "/" + thang + "\n");
-            int tinh = tinh(ngay, thang);
-            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-            dos.writeUTF(Integer.toString(tinh));
-            dos.writeUTF("\r\n");
-            if (clientSocket != null) {
-                appendLog("[+] TCP Server is stop!\n");
-                toggleButton(true);
-            }
-            if (dis != null) {
-                dis.close();
+            String text = dis.readUTF();
+            String pattern = "([0-9]{1,2})/([0-9]{1,4})";
+            Pattern r = Pattern.compile(pattern);
+            Matcher m = r.matcher(text);
+            if (m.find()) {
+                int thang = Integer.parseInt(m.group(1));
+                int nam = Integer.parseInt(m.group(2));
+                int ngay = tinh(thang, nam);
+                appendLog("[+] Nhan duoc:  " + thang + "/" + nam + "\n");
+                DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                dos.writeUTF(Integer.toString(ngay));
+                dos.writeUTF(Integer.toString(thang));
+                dos.writeUTF(Integer.toString(nam));
+                if (clientSocket != null) {
+                    appendLog("[+] TCP Server is stop!\n");
+                    toggleButton(true);
+                }
+                if (dis != null) {
+                    dis.close();
+                }
+            } else {
+                System.out.println("Error!");
             }
 
         } catch (BadLocationException ex) {
@@ -128,15 +140,15 @@ public class TCPServer extends javax.swing.JFrame {
             btnStart.setEnabled(false);
         }
     }
-    
+
     public Integer tinh(int thang, int nam) {
-       Integer[] ngay = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-       if((nam%4==0 && nam%100!=0) || nam%400==0) {
-          return ngay[thang];
-       } else {
-          ngay[2] = 28;
-          return ngay[thang];
-       }
+        Integer[] ngay = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if ((nam % 4 == 0 && nam % 100 != 0) || nam % 400 == 0) {
+            return ngay[thang];
+        } else {
+            ngay[2] = 28;
+            return ngay[thang];
+        }
     }
 
     public static void main(String args[]) {

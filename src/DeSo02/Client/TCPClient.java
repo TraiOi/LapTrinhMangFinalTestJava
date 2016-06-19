@@ -120,7 +120,7 @@ public class TCPClient extends javax.swing.JFrame {
             thang = m.group(1);
             nam = m.group(2);
             if (Integer.parseInt(thang)<=12 && Integer.parseInt(thang)>0) {
-                send(thang, nam);
+                send(text);
             } else {
                 JOptionPane.showMessageDialog(this, "Month " + thang + " not found!");
             }
@@ -132,18 +132,18 @@ public class TCPClient extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public void send(String thang, String nam) {
+    public void send(String text) {
         String serverIP = "127.0.0.1";
         Integer serverPort = 8888;
         try {
             Socket socket = new Socket(serverIP, serverPort);
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            dos.writeUTF(thang);
-            dos.writeUTF(nam);
+            dos.writeUTF(text);
             DataInputStream dis = new DataInputStream(socket.getInputStream());
             String ngay = dis.readUTF();
+            String thang = dis.readUTF();
+            String nam = dis.readUTF();
             txtResult.setText("Thang "+thang+" nam "+nam+" co "+ngay+" ngay" );
-            dos.writeUTF("\r\n");
             socket.close();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Can't connect to server");
