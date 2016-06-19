@@ -9,5 +9,4 @@
 **Tested on:** Gentoo 4.5.1
 
 **What news?**
- * v.0.001:
    * Updated [Đề Số 01](https://github.com/TraiOi/LapTrinhMangFinalTestJava/blob/master/DeBai/DeSo1.md).
