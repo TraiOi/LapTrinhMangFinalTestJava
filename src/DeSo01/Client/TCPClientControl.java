@@ -62,6 +62,7 @@ public class TCPClientControl {
             socket.close();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(view, "Can't connect to server");
+            System.out.println(ex);
         }
     }
 
