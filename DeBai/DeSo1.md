@@ -12,6 +12,7 @@
  * a) Nếu chạy Client TCP mà không chạy Server, em hãy cho biết điều gì xảy ra? Tại sao?
  * b) Nếu chạy Client UDP mà không chạy Server UDP, em hãy cho biết điều gì xảy ra? Tại sao?
  * c) Kết quả câu b khác gì với kết quả câu a? Tại sao?
+<br />[Trả lời](https://github.com/TraiOi/LapTrinhMangFinalTestJava/blob/master/LyThuyet/DeSo01.md)
  
 **Câu 2:** Viết chương trình TCP Client, trong đó Client gửi lên Server 2 số nguyên a và b, Server nhận giá trị và trả về cho Client giá trị Bội số chung nhỏ nhất của 2 số đó.
 <br />[Code here](https://github.com/TraiOi/LapTrinhMangFinalTestJava/tree/master/src/DeSo01)
