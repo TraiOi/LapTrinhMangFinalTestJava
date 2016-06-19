@@ -1,6 +1,6 @@
 ## FinalTest môn Lập Trình Mạng bằng Java
 
-**Author:** [TraiOi](https://github.com/TraiOi)
+**Author:** [TraiOi](https://www.facebook.com/traioi.ksis)
 
 **Java Platforms:** JDK 1.7
 
