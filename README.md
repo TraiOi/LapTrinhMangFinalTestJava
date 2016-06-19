@@ -10,3 +10,4 @@
 
 **What news?**
    * Updated [Đề Số 01](https://github.com/TraiOi/LapTrinhMangFinalTestJava/blob/master/DeBai/DeSo1.md).
+   * Updated [Đề số 02](https://github.com/TraiOi/LapTrinhMangFinalTestJava/blob/master/DeBai/DeSo02.md).
