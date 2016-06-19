@@ -3,31 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DeSo02.Server;
+package DeSo03.Server;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JFrame;
-import javax.swing.text.BadLocationException;
 
 /**
  *
  * @author traioi
  */
-public class TCPServer extends JFrame  {
+public class UDPServer extends javax.swing.JFrame {
 
     /**
-     * Creates new form TCPServer
+     * Creates new form UDPServer
      */
-    public TCPServer() {
+    public UDPServer() {
         initComponents();
     }
 
@@ -39,12 +36,10 @@ public class TCPServer extends JFrame  {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         btnStart = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         btnStart.setText("Start");
         btnStart.addActionListener(new java.awt.event.ActionListener() {
@@ -52,32 +47,31 @@ public class TCPServer extends JFrame  {
                 btnStartActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 237;
-        gridBagConstraints.ipady = 53;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        getContentPane().add(btnStart, gridBagConstraints);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        // TODO add your handling code here:
-        ServerSocket myServer;
-        Socket clientSocket = null;
-        Integer serverPort = 8888;
-        DataInputStream dis;
-
         try {
-            toggleButton(false);
-            myServer = new ServerSocket(serverPort);
-            boolean done = true;
-            while (done) {
-                clientSocket = myServer.accept();
-                dis = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-                String text = dis.readUTF();
+            // TODO add your handling code here:
+            DatagramSocket serverSocket = new DatagramSocket(8888);
+            byte[] receiveData = new byte[1024];
+            byte[] sendData = new byte[1024];
+            while (true) {
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                serverSocket.receive(receivePacket);
+                String text = new String(receivePacket.getData()).trim();
                 String pattern = "([0-9]{1,2})/([0-9]{4})";
                 Pattern r = Pattern.compile(pattern);
                 Matcher m = r.matcher(text);
@@ -85,32 +79,26 @@ public class TCPServer extends JFrame  {
                     int thang = Integer.parseInt(m.group(1));
                     int nam = Integer.parseInt(m.group(2));
                     int ngay = tinh(thang, nam);
-                    DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-                    dos.writeUTF(Integer.toString(ngay));
-                    dos.writeUTF(Integer.toString(thang));
-                    dos.writeUTF(Integer.toString(nam));
+                    String result = "Thang " + thang + " nam " + nam + " co " + ngay + " ngay\r\n";
+                    sendData = result.getBytes();
+                    InetAddress IPAddress = receivePacket.getAddress();
+                    int port = receivePacket.getPort();
+                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+                    serverSocket.send(sendPacket);
                 } else {
                     System.out.println("Error!");
                 }
             }
-
+        } catch (SocketException ex) {
+            Logger.getLogger(UDPServer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UDPServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnStartActionPerformed
 
     /**
      * @param args the command line arguments
      */
-
-    public void toggleButton(boolean btn) {
-        if (btn) {
-            btnStart.setEnabled(true);
-        } else {
-            btnStart.setEnabled(false);
-        }
-    }
-
     public Integer tinh(int thang, int nam) {
         Integer[] ngay = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         if ((nam % 4 == 0 && nam % 100 != 0) || nam % 400 == 0) {
@@ -127,28 +115,12 @@ public class TCPServer extends JFrame  {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TCPServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TCPServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TCPServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TCPServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TCPServer().setVisible(true);
+                new UDPServer().setVisible(true);
             }
         });
     }
